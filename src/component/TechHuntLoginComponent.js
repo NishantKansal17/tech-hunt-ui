@@ -20,7 +20,7 @@ class TechHuntLoginComponent extends Component {
     event.preventDefault()
     let userId = this.state.userName
     let userPassword = this.state.userPassword
-    const url = `http://tech-hunt-api:8080/techhunt/user/validateUser/${userId}/${userPassword}`;
+    const url = `/proxy?url=http://tech-hunt-api:8080/techhunt/user/validateUser/${userId}/${userPassword}`;
     axios.get(
       url, {
         "crossOrigin": true

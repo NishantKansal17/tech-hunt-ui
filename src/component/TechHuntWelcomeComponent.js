@@ -11,7 +11,7 @@ class TechHuntWelcomeComponent extends React.Component {
           <Row>
             <Col>
               <div className="card-content">
-                <Link to="/" className="txt2 ques-link">
+                <Link to="/PreloadedQuestions" className="txt2 ques-link">
                   <div id="key1">
                     Load Test from Question Bank
                   </div>
@@ -49,7 +49,7 @@ class TechHuntWelcomeComponent extends React.Component {
             </Col>
           </Row>
         </Container>
-        <div className="tFooter">Copyright © 2019  TechHunt All Rights Reserved</div>
+        <div className="tFooter">Copyright ï¿½ 2019  TechHunt All Rights Reserved</div>
       </div>
     );
   }

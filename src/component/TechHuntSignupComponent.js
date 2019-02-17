@@ -26,7 +26,7 @@ class TechHuntSignupComponent extends Component {
       userId: this.state.email,
       userPwd: this.state.userPwd
     }
-     const url = `http://tech-hunt-api:8080/techhunt/user/createUser`;
+     const url = `/proxy?url=http://tech-hunt-api:8080/techhunt/user/createUser`;
      axios.post(
        url, data, {
          "crossOrigin": true
