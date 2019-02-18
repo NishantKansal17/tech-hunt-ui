@@ -3,7 +3,7 @@ import React from "react"
 class ErrorComponent extends React.Component {
   render () {
     return (
-      <div>Oops! wrong user.</div>
+      <div>Oops! something went wrong! Please try again.</div>
     )
   }
 }

@@ -7,6 +7,7 @@ import ErrorComponent from "../component/ErrorComponent"
 import ForgotUserNamePasswordComponent from "../component/ForgotUserNamePasswordComponent"
 import TechHuntSignupComponent from "../component/TechHuntSignupComponent"
 import PreloadedQuestionsComponent from "../component/PreloadedQuestionsComponent"
+import CreateQuestionComponent from "../component/CreateQuestionComponent"
 
 class AppRouter extends Component {
   render () {
@@ -18,6 +19,7 @@ class AppRouter extends Component {
         <Route path="/forgotpassword" component={ForgotUserNamePasswordComponent}></Route>
         <Route path="/signup" component={TechHuntSignupComponent}></Route>
         <Route path="/preloadedquestions" component={PreloadedQuestionsComponent}></Route>
+        <Route path="/createquestion" component={CreateQuestionComponent}></Route>
       </Router>
     )
   }
