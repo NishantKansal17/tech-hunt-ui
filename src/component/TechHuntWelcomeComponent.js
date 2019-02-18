@@ -31,7 +31,7 @@ class TechHuntWelcomeComponent extends React.Component {
           <Row>
             <Col>
             <div className="card-content">
-              <Link to="/" className="txt2 ques-link">
+              <Link to="/emailquestion" className="txt2 ques-link">
                 <div id="key1">
                 Email Test
                 </div>
