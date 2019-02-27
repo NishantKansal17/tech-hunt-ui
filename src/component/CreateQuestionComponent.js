@@ -44,7 +44,7 @@ class CreateQuestionComponent extends Component {
       questionSolution: this.state.questionSolution,
       questionDescription: this.state.questionDescription
     }
-     const url = `/proxy?url=http://tech-hunt-api:8080/techhunt/question/create`;
+     const url = `http://tech-hunt-api:8080/techhunt/question/create`;
      axios.post(
        url, data, {
          "crossOrigin": true
@@ -106,14 +106,13 @@ class CreateQuestionComponent extends Component {
                 </div>
                 <div
                   className="wrap-input100 validate-input m-b-16">
-                  <input
+                  <textarea
                     className="input100"
-                    type="text"
                     name="questionDescription"
                     placeholder="Question description"
                     onChange={this.handleChange}
                     value={this.state.questionDescription}>
-                  </input>
+                  </textarea>
                   <span className="focus-input100">
                   </span>
                 </div>

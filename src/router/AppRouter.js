@@ -9,6 +9,8 @@ import TechHuntSignupComponent from "../component/TechHuntSignupComponent"
 import PreloadedQuestionsComponent from "../component/PreloadedQuestionsComponent"
 import CreateQuestionComponent from "../component/CreateQuestionComponent"
 import TechHuntEmailComponent from "../component/TechHuntEmailComponent"
+import TokenValidationComponent from "../component/TokenValidationComponent"
+import CreateTestPaperComponent from "../component/CreateTestPaperComponent"
 
 class AppRouter extends Component {
   render () {
@@ -22,6 +24,8 @@ class AppRouter extends Component {
         <Route path="/preloadedquestions" component={PreloadedQuestionsComponent}></Route>
         <Route path="/createquestion" component={CreateQuestionComponent}></Route>
         <Route path="/emailquestion" component={TechHuntEmailComponent}></Route>
+        <Route path="/validateemail" component={TokenValidationComponent}></Route>
+        <Route path="/createtest" component={CreateTestPaperComponent}></Route>
       </Router>
     )
   }

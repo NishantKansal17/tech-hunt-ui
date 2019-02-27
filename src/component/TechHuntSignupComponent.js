@@ -5,13 +5,15 @@ import {hashHistory} from "react-router"
 import '../css/app.css'
 import '../css/util.css'
 
+import TokenValidationComponent from "./TokenValidationComponent"
+
 class TechHuntSignupComponent extends Component {
   constructor(props){
     super(props);
     this.state = {
       firstName: "",
       lastName: "",
-      email: "",
+      userId: "",
       userPwd: ""
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -23,10 +25,10 @@ class TechHuntSignupComponent extends Component {
     let data = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
-      userId: this.state.email,
+      userId: this.state.userId,
       userPwd: this.state.userPwd
     }
-     const url = `/proxy?url=http://tech-hunt-api:8080/techhunt/user/createUser`;
+     const url = `http://tech-hunt-api:8080/techhunt/user/stageUser`;
      axios.post(
        url, data, {
          "crossOrigin": true
@@ -34,9 +36,9 @@ class TechHuntSignupComponent extends Component {
      ).then(response => {
        console.log(response)
        if (response.data.status === "success") {
-        hashHistory.push('/welcome');
+         hashHistory.push({pathname: '/validateemail', state: this.state});
       } else {
-        hashHistory.push('/error');
+         hashHistory.push('/error');
       }
      })
     }
@@ -107,9 +109,9 @@ class TechHuntSignupComponent extends Component {
       						<input
                     className="input100"
                     type="text"
-                    name="email"
+                    name="userId"
                     placeholder="Email Address"
-                    value={this.state.email}
+                    value={this.state.userId}
                     onChange={this.handleChange}>
                   </input>
       						<span
