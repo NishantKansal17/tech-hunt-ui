@@ -44,6 +44,7 @@ class CreateTestPaperComponent extends Component {
     });
     let data = {
       testPaperId: this.state.testName,
+      createrId: localStorage.getItem("userId"),
       questionIds: questionIds
     }
     console.log(data)

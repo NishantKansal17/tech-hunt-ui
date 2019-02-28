@@ -20,6 +20,7 @@ class TechHuntLoginComponent extends Component {
     event.preventDefault()
     let userId = this.state.userName
     let userPassword = this.state.userPassword
+    localStorage.setItem("userId", userId)
     const url = `http://tech-hunt-api:8080/techhunt/user/validateUser/${userId}/${userPassword}`;
     axios.get(
       url, {

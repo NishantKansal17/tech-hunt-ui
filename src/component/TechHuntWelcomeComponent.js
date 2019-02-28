@@ -19,6 +19,15 @@ class TechHuntWelcomeComponent extends React.Component {
               </div>
             </Col>
             <Col>
+              <div className="card-content">
+                <Link to="/preloadedpapers" className="txt2 ques-link">
+                  <div id="key1">
+                    Preloaded Papers
+                  </div>
+                </Link>
+              </div>
+            </Col>
+            <Col>
             <div className="card-content">
               <Link to="/createquestion" className="txt2 ques-link">
                 <div id="key1">
