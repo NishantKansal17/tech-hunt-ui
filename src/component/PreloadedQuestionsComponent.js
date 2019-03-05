@@ -132,16 +132,9 @@ class PreloadedQuestionsComponent extends React.Component {
 
   render() {
     return (
-      <div className="limiter">
-        <div className="container-login100">
-           <div >
-             <div
-               className="login100-form validate-form p-l-55 p-r-55 p-t-110">
-                  <span className="login100-form-title">Select Questions</span>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <div style={{ maxWidth: '100%' }}>
-                    <MaterialTable
+      <div>
+        <div>
+          <MaterialTable
                       columns={[
                         { title: 'Question Id', field: 'questionId' },
                         { title: 'Question Type', field: 'questionType' },
@@ -152,7 +145,7 @@ class PreloadedQuestionsComponent extends React.Component {
                         { title: 'Question Default', field: 'questionDefault' }
                       ]}
                       data={this.state.data}
-                      title="Tech Hunt Questions"
+                      title="Select Questions"
                       options={{
                         selection: true
                       }}
@@ -164,14 +157,10 @@ class PreloadedQuestionsComponent extends React.Component {
                       }}
                     />
                   </div>
-                </div>
-                <div className="text-center">
-                  <button className="login100-form-btn-small" onClick={this.handleNext}>Next</button>
-                </div>
-              </div>
-            </div>
+          <div className="text-center">
+            <button className="" onClick={this.handleNext}>Next</button>
           </div>
-        </div>
+      </div>
     )
   }
 }
