@@ -9,7 +9,7 @@ class TechHuntWelcomeComponent extends React.Component {
     return (
       <div>
       <Header />
-        <Container className="m-b-0">
+        <Container className="m-b-0 tc-container">
             <div className="tcMenu">
               <MenuComponent />
             </div>

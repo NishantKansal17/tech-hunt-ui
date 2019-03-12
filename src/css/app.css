@@ -9,7 +9,7 @@
 
 body, html {
 	height: 100%;
-	font-family: Verdana, Geneva, sans-serif;
+	font-family: Verdana, Geneva, sans-serif !important;
 }
 .tHeader {
 	background-image: linear-gradient(rgb(70, 83, 173), rgb(10, 20, 88));
@@ -28,9 +28,6 @@ body, html {
 	margin: 0px;
 	padding: 5px;
 }
-/* .tcMenu .container {
-	width: 25vw;
-} */
 .tcMenu .nav-container {
 	position: absolute;
 }
@@ -55,7 +52,13 @@ a:hover {
 	text-decoration: none;
   color: #1b3815;
 }
-
+.nav-container a {
+	 color: #fff !important;
+	 text-decoration: none !important;
+ }
+ .nav-container a:hover {
+ 	 color: #1b3815 !important;
+}
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
 	margin: 0px;
@@ -516,4 +519,15 @@ iframe {
     padding-left: 15px;
     padding-right: 15px;
   }
+}
+.container {
+	max-width: 100% !important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+.main {
+	margin-left: 16%;
+}
+.tc-container {
+	margin-top: -5px;
 }
