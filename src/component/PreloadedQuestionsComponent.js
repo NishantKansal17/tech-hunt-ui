@@ -18,10 +18,6 @@ class PreloadedQuestionsComponent extends React.Component {
       selectedData: [],
       columns: [
         {
-          dataField: 'questionId',
-          text: 'Question Id'
-        },
-        {
           dataField: 'questionType',
           text: 'Question Type'
         },
@@ -44,15 +40,19 @@ class PreloadedQuestionsComponent extends React.Component {
         {
           dataField: 'questionDefault',
           text: 'Question Default'
+        },
+        {
+          dataField: 'multiQuestion',
+          text: 'Multiple Choice'
         }
       ],
       show: false,
       testName: ""
     }
-    this.handleNext = this.handleNext.bind(this)
+    this.handleCreatePaper = this.handleCreatePaper.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.handleSave = this.handleSave.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+    this.handleDone = this.handleDone.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentDidMount() {
@@ -70,7 +70,7 @@ class PreloadedQuestionsComponent extends React.Component {
     })
   }
 
-  handleNext (event) {
+  handleCreatePaper (event) {
     //hashHistory.push({pathname: '/createtest', state: this.state})
     this.setState(prevState => {
       prevState['show'] = true
@@ -78,7 +78,7 @@ class PreloadedQuestionsComponent extends React.Component {
     })
   }
 
-  handleClose () {
+  handleCancel () {
     this.setState(prevState => {
       prevState['show'] = false
       return prevState
@@ -93,19 +93,45 @@ class PreloadedQuestionsComponent extends React.Component {
     });
   }
 
-  handleSave (event) {
-    console.log(this.state)
-    this.setState(prevState => {
-      prevState['show'] = false
-      return prevState
+  handleDone (event) {
+    let questionIds = []
+    this.state.selectedData.map((object, index) => {
+      questionIds.push(object['questionId'])
     });
+    let data = {
+      testPaperId: this.state.testName,
+      createrId: localStorage.getItem("userId"),
+      questionIds: questionIds
+    }
+    const url = `http://tech-hunt-api:8080/techhunt/testpaper/create`;
+    axios.post(
+      url, data, {
+        "crossOrigin": true
+      }
+    ).then(response => {
+      console.log(response)
+      if (response.data.status === "success") {
+        alert(response.data.message)
+        this.setState(prevState => {
+          prevState['show'] = false
+          return prevState
+        });
+        hashHistory.push('/welcome');
+      } else {
+        this.setState(prevState => {
+          prevState['show'] = false
+          return prevState
+        });
+        hashHistory.push('/error');
+      }
+    })
   }
 
   render() {
     return (
       <div>
-        <div className="btn-group float-right">
-          <button className="btn btn-primary btn-md" onClick={this.handleNext}>Next</button>
+        <div className="btn-group float-left">
+          <button className="btn btn-primary btn-md" onClick={this.handleCreatePaper}>Create Paper</button>
         </div>
         <BootstrapTable
           keyField='questionId'
@@ -113,13 +139,30 @@ class PreloadedQuestionsComponent extends React.Component {
           columns={ this.state.columns }
           selectRow={{
             mode: 'checkbox',
-            clickToSelect: true
+            clickToSelect: true,
+            onSelect: (row, isSelect, rowIndex, e) => {
+              if (isSelect) {
+                if (!this.state.selectedData.includes(row)) {
+                  this.setState(prevState => {
+                    prevState['selectedData'].push(row)
+                    return prevState
+                  });
+                }
+              } else {
+                if (this.state.selectedData.includes(row)) {
+                  this.setState(prevState => {
+                    delete prevState['selectedData'][rowIndex]
+                    return prevState
+                  });
+                }
+              }
+            }
           }}
           pagination={ paginationFactory() }
           />
           <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Paper Name</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <input
@@ -132,11 +175,11 @@ class PreloadedQuestionsComponent extends React.Component {
             </input>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Close
+            <Button variant="secondary" onClick={this.handleCancel}>
+              Cancel
             </Button>
-            <Button variant="primary" onClick={this.handleSave}>
-              Save Changes
+            <Button variant="primary" onClick={this.handleDone}>
+              Done
             </Button>
           </Modal.Footer>
         </Modal>
