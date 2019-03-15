@@ -18,7 +18,9 @@ class TechHuntSignupComponent extends Component {
       userId: "",
       userPwd: "",
       token: "",
-      show: false
+      show: false,
+      timer: 0,
+      clear: 0
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -63,13 +65,28 @@ class TechHuntSignupComponent extends Component {
       prevState['token'] = "";
       return prevState;
     });
+    let counter = this.state.timer;
+    let start = setInterval(function(){
+      if (counter !== 0) {
+        counter--
+        document.getElementById("timerMessage").innerHTML = "<i className='fa fa-exclamation-triangle'></i>Token will expire in "+ counter + " seconds";
+      } else {
+        document.getElementById("timerMessage").innerHTML = "<i className='fa fa-exclamation-triangle'></i>Token is expired!";
+      }
+    }, 1000)
+    this.setState(prevState => {
+      prevState['clear'] = start
+      return prevState
+    });
   }
 
   handleClose () {
     this.setState(prevState => {
       prevState['show'] = false;
+      prevState['timer'] = 0;
       return prevState;
     });
+    clearInterval(this.state.clear);
   }
 
   handleSubmit (event) {
@@ -87,8 +104,12 @@ class TechHuntSignupComponent extends Component {
        }
      ).then(response => {
        if (response.data.status === "success") {
+         let message = response.data.message;
+         let messages = message.split(":");
+         console.log(messages[1])
          this.setState(prevState => {
            prevState['show'] = true
+           prevState['timer'] = messages[1]
            return prevState
          });
          console.log(this.state)
@@ -192,7 +213,7 @@ class TechHuntSignupComponent extends Component {
                     value={this.state.token}
                     onChange={this.handleChange}>
                   </input>
-                  <label><i class="fa fa-exclamation-triangle"></i>Token will expire in 60 seconds</label>
+                  <label id="timerMessage"></label>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={this.handleClose}>
