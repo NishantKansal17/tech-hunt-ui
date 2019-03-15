@@ -24,11 +24,12 @@ class TechHuntSignupComponent extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleValidate = this.handleValidate.bind(this)
+    this.handleShow = this.handleShow.bind(this)
   }
 
   handleValidate () {
     console.log(this.state)
-    const url = `http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}`;
+    const url = `http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}/${this.state.userId}`;
     axios.get(
      url, {
        "crossOrigin": true
@@ -55,6 +56,13 @@ class TechHuntSignupComponent extends Component {
          alert(response.data.message)
       }
     })
+  }
+
+  handleShow () {
+    this.setState(prevState => {
+      prevState['token'] = "";
+      return prevState;
+    });
   }
 
   handleClose () {
@@ -171,7 +179,7 @@ class TechHuntSignupComponent extends Component {
       							Register
       						</button>
       					</div>
-                <Modal show={this.state.show} onHide={this.handleClose}>
+                <Modal show={this.state.show} onHide={this.handleClose} onShow={this.handleShow}>
                 <Modal.Header closeButton>
                   <Modal.Title>User Validation</Modal.Title>
                 </Modal.Header>
@@ -184,6 +192,7 @@ class TechHuntSignupComponent extends Component {
                     value={this.state.token}
                     onChange={this.handleChange}>
                   </input>
+                  <label><i class="fa fa-exclamation-triangle"></i>Token will expire in 60 seconds</label>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={this.handleClose}>
