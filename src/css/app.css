@@ -531,3 +531,14 @@ iframe {
 .tc-container {
 	margin-top: -5px;
 }
+.button {
+  border: none;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+}
+.button-border {
+	border-radius: 8px;
+}

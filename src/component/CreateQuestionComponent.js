@@ -1,6 +1,8 @@
 import React,{Component} from "react"
 import axios from "axios"
 import {hashHistory} from "react-router"
+import {Card, Button, Form} from "react-bootstrap"
+
 
 import '../css/app.css'
 import '../css/util.css'
@@ -13,7 +15,9 @@ class CreateQuestionComponent extends Component {
       questionType: "",
       questionOptions: "",
       questionSolution: "",
-      questionDescription: ""
+      questionDescription: "",
+      questionDefault: false,
+      multiQuestion: false
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -21,13 +25,22 @@ class CreateQuestionComponent extends Component {
 
   handleChange(event) {
     let {name, value} = event.target;
+    console.log(name + ":" + value)
     this.setState(prevState => {
       //console.log(prevState)
       if (name === "questionOptions") {
         let questionOptions = value.split(",")
         prevState[name] = questionOptions
       } else {
-        prevState[name] = value
+        if (name === "multiQuestion") {
+          if (value === "multi-choice-1") {
+            prevState[name] = true
+          } else {
+            prevState[name] = false
+          }
+        } else {
+            prevState[name] = value
+        }
       }
       //console.log(prevState)
       return prevState
@@ -42,8 +55,10 @@ class CreateQuestionComponent extends Component {
       questionType: this.state.questionType,
       questionOptions: this.state.questionOptions,
       questionSolution: this.state.questionSolution,
-      questionDescription: this.state.questionDescription
+      questionDescription: this.state.questionDescription,
+      multiQuestion: this.state.multiQuestion
     }
+    console.log(this.state)
      const url = `http://tech-hunt-api:8080/techhunt/question/create`;
      axios.post(
        url, data, {
@@ -52,8 +67,17 @@ class CreateQuestionComponent extends Component {
      ).then(response => {
        console.log(response)
        if (response.data.status === "success") {
-         window.alert("Question create successfully!")
-        hashHistory.push('/welcome');
+         window.alert("Question created successfully!")
+         this.setState(prevState => {
+           prevState['questionLanguage'] = ""
+           prevState['questionType'] = ""
+           prevState['questionOptions'] = ""
+           prevState['questionSolution'] = ""
+           prevState['questionDescription'] = ""
+           prevState['multiQuestion'] = false
+           return prevState
+         });
+        //hashHistory.push('/welcome');
       } else {
         hashHistory.push('/error');
       }
@@ -62,95 +86,86 @@ class CreateQuestionComponent extends Component {
 
   render() {
     return (
-        <div className="limiter">
-          <div className="container-login100">
-             <div className="wrap-login100 signup">
-             <form
-               className="login100-form validate-form p-l-55 p-r-55 p-t-110"
-               onSubmit={this.handleSubmit}>
-                  <span className="login100-form-title">Create Question</span>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <label>
-                    Select your language:
-                    <select
+      <Card style={{width: "450%"}}>
+        <Card.Header as="h5">Create Question</Card.Header>
+        <Card.Body>
+          <Card.Title>Question Details</Card.Title>
+            <Form style={{width: "100%"}}>
+              <Form.Group controlId="languageGroup">
+                <Form.Label>Select your language</Form.Label>
+                  <Form.Control as="select"
                     name="questionLanguage"
                     value={this.state.questionLanguage}
                     onChange={this.handleChange}>
-                      <option value="0">--Select--</option>
-                      <option value="Java">Java</option>
-                      <option value="Python">Python</option>
-                      <option value="Java Script">Java Script</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </label>
-                  <span className="focus-input100">
-                  </span>
-                </div>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <label>
-                    Select question type:
-                    <select
+                    <option value="0">--Select--</option>
+                    <option value="Java">Java</option>
+                    <option value="Python">Python</option>
+                    <option value="Java Script">Java Script</option>
+                    <option value="Other">Other</option>
+                  </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="questionTypeGroup">
+                <Form.Label>Select question type</Form.Label>
+                  <Form.Control as="select"
                     name="questionType"
                     value={this.state.questionType}
                     onChange={this.handleChange}>
-                      <option value="0">--Select--</option>
+                    <option value="0">--Select--</option>
                       <option value="Easy">Easy</option>
                       <option value="Medium">Medium</option>
                       <option value="Hard">Hard</option>
-                    </select>
-                  </label>
-                  <span className="focus-input100">
-                  </span>
-                </div>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <textarea
-                    className="input100"
+                  </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="descriptionGroup">
+                <Form.Label>Question description</Form.Label>
+                  <Form.Control as="textarea"
                     name="questionDescription"
-                    placeholder="Question description"
-                    onChange={this.handleChange}
-                    value={this.state.questionDescription}>
-                  </textarea>
-                  <span className="focus-input100">
-                  </span>
-                </div>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <input
-                    className="input100"
+                    value={this.state.questionDescription}
+                    onChange={this.handleChange}>
+                  </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="optionsGroup">
+                <Form.Label>Question Options (Comma separated)</Form.Label>
+                  <Form.Control
                     type="text"
                     name="questionOptions"
-                    placeholder="Enter comma separated text"
                     onChange={this.handleChange}
                     value={this.state.questionOptions}>
-                  </input>
-                  <span className="focus-input100">
-                  </span>
-                </div>
-                <div
-                  className="wrap-input100 validate-input m-b-16">
-                  <input
-                    className="input100"
+                  </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="solutionGroup">
+                <Form.Label>Question Solution (Comma separated)</Form.Label>
+                  <Form.Control
                     type="text"
                     name="questionSolution"
-                    placeholder="Question solution"
                     onChange={this.handleChange}
                     value={this.state.questionSolution}>
-                  </input>
-                  <span className="focus-input100">
-                  </span>
-                </div>
-                <div className="container-login100-form-btn m-b-30 m-t-30">
-                  <button className="login100-form-btn">
-                    Create
-                  </button>
-                </div>
-              </form>
-        </div>
-      </div>
-    </div>
+                  </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="multiChoiceGroup">
+                <Form.Label>Is Multiple Choice Question</Form.Label>
+                  <Form.Check
+                    type="radio"
+                    label="True"
+                    name="multiQuestion"
+                    onChange={this.handleChange}
+                    value="multi-choice-1"
+                  />
+                <Form.Check
+                  type="radio"
+                  label="False"
+                  name="multiQuestion"
+                  onChange={this.handleChange}
+                  value="multi-choice-2"
+                  checked
+                />
+              </Form.Group>
+              <Button variant="primary" type="button" onClick={this.handleSubmit}>
+                Create
+              </Button>
+            </Form>
+        </Card.Body>
+      </Card>
     )
   }
 }
