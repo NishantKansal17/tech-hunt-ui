@@ -40,11 +40,18 @@ class ShowTechHuntQuestionPapers extends Component {
         testPaperId: "",
         createrId: "",
         questionIds: []
-      }
+      },
+      showEmail: false,
+      email: ""
     }
-    this.handleDeletePaper = this.handleDeletePaper.bind(this)
+    this.deleteQuestionPaper = this.deleteQuestionPaper.bind(this)
     this.getPaperDetails = this.getPaperDetails.bind(this)
     this.closeGet = this.closeGet.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.emailQuestionPaper = this.emailQuestionPaper.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.sendEmail = this.sendEmail.bind(this)
+    this.closeEmail = this.closeEmail.bind(this)
   }
 
   componentDidMount () {
@@ -62,17 +69,18 @@ class ShowTechHuntQuestionPapers extends Component {
     })
   }
 
-  handleDeletePaper (event) {
-    let data = this.state.dataToDelete
-    console.log(data)
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/deletePaper/${localStorage.getItem("userId")}`;
-    axios.delete(
-      url, {data: data}, {
-        "crossOrigin": true
-      }
-    ).then(response => {
-      if (response.data.status === "success") {
-        alert("Rows deleted!")
+  deleteQuestionPaper () {
+    var option = window.confirm("Are you sure to delete this question paper?")
+    if (option) {
+      let data = this.state.selectedData
+      console.log(data)
+      const url = `http://tech-hunt-api:8080/techhunt/testpaper/deleteMultiPapersById/${localStorage.getItem("userId")}`;
+      axios.delete(
+        url, {data: data}, {
+          "crossOrigin": true
+        }
+      ).then(response => {
+        alert(response.data.message)
         const url = `http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
         axios.get(
           url, {
@@ -85,10 +93,8 @@ class ShowTechHuntQuestionPapers extends Component {
            data: data
          })
         })
-      } else {
-        alert(response.data.message)
-      }
-    })
+      })
+    }
   }
   getPaperDetails () {
     if (this.state.selectedData === undefined
@@ -101,8 +107,6 @@ class ShowTechHuntQuestionPapers extends Component {
       return
     }
     let testPaperId = this.state.selectedData[0]['testPaperId']
-    console.log(testPaperId)
-    console.log(localStorage.getItem("userId"))
     const url = `http://tech-hunt-api:8080/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/${testPaperId}`;
     axios.get(
       url, {
@@ -129,15 +133,79 @@ class ShowTechHuntQuestionPapers extends Component {
     });
   }
 
+  handleChange (event) {
+    let value = event.target.value
+    this.setState(prevState => {
+      prevState['email'] = value
+      return prevState
+    });
+  }
+
+  closeEmail () {
+    this.setState(prevState => {
+      prevState['showEmail'] = false
+      return prevState
+    });
+  }
+
+  emailQuestionPaper () {
+    this.setState(prevState => {
+      prevState['showEmail'] = true
+      return prevState
+    });
+  }
+
+  sendEmail () {
+    if (this.state.email === undefined || emails === '') {
+      alert ("Email(s) can't be empty!")
+      return
+    }
+    let emails = this.state.email.split(",")
+    let data = {
+      emailTo: emails,
+      emailSubject: "<This is an invitation from tech-hunt for online exam TODO>",
+      emailBody: "<This is an invitation from tech-hunt for online exam TODO>"
+    }
+     const url = `http://tech-hunt-api:8080/techhunt/email/send`;
+     axios.post(
+       url, data, {
+         "crossOrigin": true
+       }
+     ).then(response => {
+       console.log(response)
+       if (response.data.status === "success") {
+         window.alert("Email sent successfully!")
+         this.setState(prevState => {
+           prevState['showEmail'] = false
+           return prevState
+         });
+      } else {
+        window.alert(response.data.message)
+      }
+     })
+  }
+
   render () {
 
       return (
         <div>
           <div className="btn-group float-left">
-            <button className="btn btn-secondary btn-md button-border" onClick={this.handleDeletePaper}><i className="fa fa-plus"></i></button>
+            <button
+              className="btn btn-secondary btn-md button-border"
+              title="View Question Paper"
+              onClick={this.getPaperDetails}><i className="fa fa-eye"></i></button>
           </div>
           <div className="btn-group float-left">
-            <button className="btn btn-secondary btn-md button-border" onClick={this.getPaperDetails}><i className="fa fa-eye"></i></button>
+            <button
+              className="btn btn-danger btn-md button-border"
+              title="Delete Question Paper"
+              onClick={this.deleteQuestionPaper}><i className="fa fa-trash" aria-hidden="true"></i></button>
+          </div>
+          <div className="btn-group float-left">
+            <button
+              className="btn btn-success btn-md button-border"
+              title="Email Question Paper"
+              onClick={this.emailQuestionPaper}><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
           </div>
           <BootstrapTable
             keyField='testPaperId'
@@ -187,7 +255,6 @@ class ShowTechHuntQuestionPapers extends Component {
                 <Form.Group controlId="questionIdsGroup">
                   <Form.Label>Question Ids: </Form.Label>
                   <LinkComponent links={this.state.modalData}/>
-
                 </Form.Group>
                 <Form.Group controlId="createrIdGroup">
                   <Form.Label>Created By: </Form.Label>
@@ -205,6 +272,29 @@ class ShowTechHuntQuestionPapers extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
+          <Modal show={this.state.showEmail} onHide={this.closeEmail}>
+          <Modal.Header closeButton>
+            <Modal.Title>Send Email</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              className="input100"
+              type="text"
+              name="email"
+              placeholder="Comma Separated Emails"
+              value={this.state.email}
+              onChange={this.handleChange}>
+            </input>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.closeEmail}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={this.sendEmail}>
+              Send
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
       )
   }

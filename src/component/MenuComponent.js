@@ -36,7 +36,6 @@ class MenuComponent extends PureComponent {
             <Route path="/preloadedquestions" component={PreloadedQuestionsComponent} />
             <Route path="/createquestion" component={CreateQuestionComponent} />
             <Route path="/preloadedpapers" component={ShowTechHuntQuestionPapers} />
-            <Route path="/emailquestion" component={TechHuntEmailComponent} />
         </div>
         </Container>
       </Router>
