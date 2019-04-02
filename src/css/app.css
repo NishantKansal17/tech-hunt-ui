@@ -404,7 +404,7 @@ iframe {
   padding: 0 20px;
   width: 100%;
   height: 50px;
-  background-color: #f5821f;
+  background-color: #B7B794;
   /* border-radius: 25px; */
 
   font-family: inherit;
@@ -420,7 +420,7 @@ iframe {
   transition: all 0.4s;
 }
 .login100-form-btn:hover {
-  background-color: #d2701c;
+  background-color: #8e8e6f;
 }
 .app-btn {
 	background-image: linear-gradient(rgb(177, 179, 199), rgb(67, 69, 78));
@@ -541,4 +541,20 @@ iframe {
 }
 .button-border {
 	border-radius: 8px;
+}
+
+.btn-facebook {
+  background: #3B5998;
+  border-radius: 1;
+  color: #fff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #263961;
+}
+.btn-facebook:link, .btn-facebook:visited {
+  color: #fff;
+}
+.btn-facebook:active, .btn-facebook:hover {
+  background: #263961;
+  color: #fff;
 }

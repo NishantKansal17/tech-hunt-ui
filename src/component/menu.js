@@ -17,12 +17,12 @@ export default [
     icon: "",
     to: "/preloadedpapers"
   },
-  {
-    title: "Email Questions",
-    isCollapsible: true,
-    icon: "",
-    to: "/emailquestion"
-  },
+  // {
+  //   title: "Email Questions",
+  //   isCollapsible: true,
+  //   icon: "",
+  //   to: "/emailquestion"
+  // },
   {
     title: "FAQ's",
     isCollapsible: true,
