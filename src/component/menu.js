@@ -17,6 +17,12 @@ export default [
     icon: "",
     to: "/preloadedpapers"
   },
+  {
+    title: "User Exam Form",
+    isCollapsible: true,
+    icon: "",
+    to: "/userpaperform"
+  },
   // {
   //   title: "Email Questions",
   //   isCollapsible: true,

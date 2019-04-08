@@ -5,6 +5,7 @@ import PreloadedQuestionsComponent from "./PreloadedQuestionsComponent"
 import CreateQuestionComponent from "./CreateQuestionComponent"
 import ShowTechHuntQuestionPapers from "./ShowTechHuntQuestionPapers"
 import TechHuntEmailComponent from "./TechHuntEmailComponent"
+import UserPaperForm from "./UserPaperForm"
 import MENU_ITEMS from "./menu";
 
 class MenuComponent extends PureComponent {
@@ -36,6 +37,7 @@ class MenuComponent extends PureComponent {
             <Route path="/preloadedquestions" component={PreloadedQuestionsComponent} />
             <Route path="/createquestion" component={CreateQuestionComponent} />
             <Route path="/preloadedpapers" component={ShowTechHuntQuestionPapers} />
+            <Route path="/userpaperform" component={UserPaperForm} />
         </div>
         </Container>
       </Router>
