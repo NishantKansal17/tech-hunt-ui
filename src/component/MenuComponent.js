@@ -5,6 +5,7 @@ import PreloadedQuestionsComponent from "./PreloadedQuestionsComponent"
 import CreateQuestionComponent from "./CreateQuestionComponent"
 import ShowTechHuntQuestionPapers from "./ShowTechHuntQuestionPapers"
 import TechHuntEmailComponent from "./TechHuntEmailComponent"
+import UserPaperForm from "./UserPaperForm"
 import MENU_ITEMS from "./menu";
 
 function componentWithProps(Component, props) {
@@ -39,9 +40,10 @@ class MenuComponent extends PureComponent {
             <div className="bars"></div>
             <div className="bars"></div>
             </button>
-            <Route path="/preloadedquestions" component={componentWithProps(PreloadedQuestionsComponent, {userId: this.props.state.userId})} />
+			<Route path="/preloadedquestions" component={componentWithProps(PreloadedQuestionsComponent, {userId: this.props.state.userId})} />
             <Route path="/createquestion" component={componentWithProps(CreateQuestionComponent, {userId: this.props.state.userId})} />
             <Route path="/preloadedpapers" component={componentWithProps(ShowTechHuntQuestionPapers, {userId: this.props.state.userId})} />
+			<Route path="/userpaperform" component={componentWithProps(UserPaperForm, {userId: this.props.state.userId})} />
         </div>
         </Container>
       </Router>

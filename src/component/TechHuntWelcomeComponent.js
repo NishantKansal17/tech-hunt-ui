@@ -12,7 +12,7 @@ class TechHuntWelcomeComponent extends React.Component {
     return (
       <div>
       <Header state={this.props.location.state}/>
-        <Container className="m-b-0 tc-container">
+        <Container className="m-b-0">
             <div className="tcMenu">
               <MenuComponent state={this.props.location.state}/>
             </div>
