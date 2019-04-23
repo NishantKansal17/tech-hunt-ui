@@ -7,6 +7,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import utils from "./utils.js"
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -55,7 +56,8 @@ class ShowTechHuntQuestionPapers extends Component {
   }
 
   componentDidMount () {
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
+    let cred = utils.getHeaders().authorization;
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
     axios.get(
       url, {
         "crossOrigin": true
@@ -74,14 +76,15 @@ class ShowTechHuntQuestionPapers extends Component {
     if (option) {
       let data = this.state.selectedData
       console.log(data)
-      const url = `http://tech-hunt-api:8080/techhunt/testpaper/deleteMultiPapersById/${localStorage.getItem("userId")}`;
+      let cred = utils.getHeaders().authorization;
+      const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/deleteMultiPapersById/${localStorage.getItem("userId")}`;
       axios.delete(
         url, {data: data}, {
           "crossOrigin": true
         }
       ).then(response => {
         alert(response.data.message)
-        const url = `http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
+        const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
         axios.get(
           url, {
             "crossOrigin": true
@@ -107,7 +110,8 @@ class ShowTechHuntQuestionPapers extends Component {
       return
     }
     let testPaperId = this.state.selectedData[0]['testPaperId']
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/${testPaperId}`;
+    let cred = utils.getHeaders().authorization;
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/${testPaperId}`;
     axios.get(
       url, {
         "crossOrigin": true
@@ -166,7 +170,8 @@ class ShowTechHuntQuestionPapers extends Component {
       emailSubject: "<This is an invitation from tech-hunt for online exam TODO>",
       emailBody: "<This is an invitation from tech-hunt for online exam TODO>"
     }
-     const url = `http://tech-hunt-api:8080/techhunt/email/send`;
+    let cred = utils.getHeaders().authorization;
+     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/email/send`;
      axios.post(
        url, data, {
          "crossOrigin": true

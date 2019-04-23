@@ -7,6 +7,7 @@ import Footer from './Footer'
 class TechHuntWelcomeComponent extends React.Component {
   constructor(props){
     super(props);
+    console.log(this.props.location.state)
   }
   render () {
     return (

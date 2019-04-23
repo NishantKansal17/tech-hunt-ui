@@ -27,12 +27,6 @@ class LoginImageComponent extends Component {
               <img src={require("../images/java.png")} style={{width: '100%'}}></img>
             </a>
           </div>
-
-
-
-
-
-
           <div className="column">
             <a href="https://kubernetes.io/docs/tutorials/kubernetes-basics" target="_blank">
               <img src={require("../images/k8s.png")} style={{width: '100%'}}></img>

@@ -6,6 +6,7 @@ import {Card, Button, Form} from "react-bootstrap"
 
 import '../css/app.css'
 import '../css/util.css'
+import utils from "./utils.js"
 
 class CreateQuestionComponent extends Component {
   constructor() {
@@ -59,7 +60,8 @@ class CreateQuestionComponent extends Component {
       multiQuestion: this.state.multiQuestion
     }
     console.log(this.state)
-     const url = `http://tech-hunt-api:8080/techhunt/question/create`;
+    let cred = utils.getHeaders().authorization;
+     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question/create`;
      axios.post(
        url, data, {
          "crossOrigin": true

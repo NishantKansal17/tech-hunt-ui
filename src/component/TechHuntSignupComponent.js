@@ -6,6 +6,7 @@ import { Modal, Button } from 'react-bootstrap';
 import '../css/app.css'
 import '../css/util.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import utils from "./utils.js"
 
 import TokenValidationComponent from "./TokenValidationComponent"
 
@@ -31,7 +32,8 @@ class TechHuntSignupComponent extends Component {
 
   handleValidate () {
     console.log(this.state)
-    const url = `http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}/${this.state.userId}`;
+    let cred = utils.getHeaders().authorization;
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}/${this.state.userId}`;
     axios.get(
      url, {
        "crossOrigin": true
@@ -41,7 +43,7 @@ class TechHuntSignupComponent extends Component {
         this.setState(prevState => {
           prevState['show'] = false
         });
-        const url = `http://tech-hunt-api:8080/techhunt/user/createUser`;
+        const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/createUser`;
          axios.post(
            url, this.state , {
              "crossOrigin": true
@@ -97,7 +99,8 @@ class TechHuntSignupComponent extends Component {
       userId: this.state.userId,
       userPwd: this.state.userPwd
     }
-     const url = `http://tech-hunt-api:8080/techhunt/user/stageUser`;
+    let cred = utils.getHeaders().authorization;
+     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/stageUser`;
      axios.post(
        url, data, {
          "crossOrigin": true

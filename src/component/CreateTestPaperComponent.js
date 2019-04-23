@@ -4,6 +4,7 @@ import {hashHistory} from "react-router"
 
 import '../css/app.css'
 import '../css/util.css'
+import utils from "./utils.js"
 
 class CreateTestPaperComponent extends Component {
   constructor (props) {
@@ -48,7 +49,8 @@ class CreateTestPaperComponent extends Component {
       questionIds: questionIds
     }
     console.log(data)
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/create`;
+    let cred = utils.getHeaders().authorization;
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/create`;
     axios.post(
       url, data, {
         "crossOrigin": true

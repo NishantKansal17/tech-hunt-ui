@@ -7,6 +7,12 @@ import ShowTechHuntQuestionPapers from "./ShowTechHuntQuestionPapers"
 import TechHuntEmailComponent from "./TechHuntEmailComponent"
 import MENU_ITEMS from "./menu";
 
+function componentWithProps(Component, props) {
+  return function () {
+    return <Component state={props} />
+  }
+}
+
 class MenuComponent extends PureComponent {
   state = {
     isOpen: true
@@ -33,9 +39,9 @@ class MenuComponent extends PureComponent {
             <div className="bars"></div>
             <div className="bars"></div>
             </button>
-            <Route path="/preloadedquestions" component={PreloadedQuestionsComponent} />
-            <Route path="/createquestion" component={CreateQuestionComponent} />
-            <Route path="/preloadedpapers" component={ShowTechHuntQuestionPapers} />
+            <Route path="/preloadedquestions" component={componentWithProps(PreloadedQuestionsComponent, {userId: this.props.state.userId})} />
+            <Route path="/createquestion" component={componentWithProps(CreateQuestionComponent, {userId: this.props.state.userId})} />
+            <Route path="/preloadedpapers" component={componentWithProps(ShowTechHuntQuestionPapers, {userId: this.props.state.userId})} />
         </div>
         </Container>
       </Router>

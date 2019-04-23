@@ -10,10 +10,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/app.css'
 
 import {hashHistory} from "react-router"
+import utils from "./utils.js"
 
 class PreloadedQuestionsComponent extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       data: [],
       selectedData: [],
@@ -73,17 +74,30 @@ class PreloadedQuestionsComponent extends React.Component {
   }
 
   componentDidMount() {
-    const url = `http://tech-hunt-api:8080/techhunt/question`;
+    let authHeader = utils.getHeaders(this.props.state.userId)
+    if (authHeader === undefined || authHeader === null) {
+      alert("Invalid user session.")
+      hashHistory.push('/');
+    }
+    let cred = authHeader.authorization
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8088/techhunt/question`;
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
+      console.log(response)
      let data = response.data;
      this.setState(prevState => {
        prevState['data'] = data
        return prevState
      })
+    })
+    .catch((response) => {
+      if (response.message.includes("401")) {
+        alert(response.message)
+        hashHistory.push('/');
+      }
     })
   }
 
@@ -120,7 +134,13 @@ class PreloadedQuestionsComponent extends React.Component {
       createrId: localStorage.getItem("userId"),
       questionIds: questionIds
     }
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/create`;
+    let authHeader = utils.getHeaders()
+    let cred = authHeader.authorization
+    if (authHeader === undefined || authHeader === null) {
+      alert("Invalid user session.")
+      hashHistory.push('/');
+    }
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/create`;
     axios.post(
       url, data, {
         "crossOrigin": true
@@ -219,7 +239,13 @@ class PreloadedQuestionsComponent extends React.Component {
       if (!isOK) {
         return
       }
-      const url = `http://tech-hunt-api:8080/techhunt/question/deleteMultiQuestions/${questions}`;
+      let authHeader = utils.getHeaders()
+      let cred = authHeader.authorization
+      if (authHeader === undefined || authHeader === null) {
+        alert("Invalid user session.")
+        hashHistory.push('/');
+      }
+      const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question/deleteMultiQuestions/${questions}`;
       axios.delete(
         url, {
           "crossOrigin": true
@@ -227,7 +253,7 @@ class PreloadedQuestionsComponent extends React.Component {
       ).then(response => {
         if (response.data.status === "success") {
           alert(response.data.message)
-          const url = `http://tech-hunt-api:8080/techhunt/question`;
+          const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question`;
           axios.get(
             url, {
               "crossOrigin": true

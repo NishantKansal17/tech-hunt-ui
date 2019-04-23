@@ -1,6 +1,8 @@
 import React, {Component} from "react"
 import axios from "axios"
 import {Link, hashHistory} from "react-router"
+import cookie from 'react-cookies'
+import utils from "./utils.js"
 
 import '../css/app.css'
 import '../css/util.css'
@@ -20,16 +22,18 @@ class LoginPanelComponent extends Component {
     let userId = this.state.userName
     let userPassword = this.state.userPassword
     localStorage.setItem("userId", userId)
-    const url = `http://tech-hunt-api:8080/techhunt/user/validateUser/${userId}/${userPassword}`;
+    let cred = btoa(`${userId}:${userPassword}`)
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8088/techhunt/user/validateUser/`;
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
-      console.log(response)
+      console.log(response.headers)
       if (response.data.status === "failure") {
         hashHistory.push('/error');
       } else {
+        utils.setHeaders(response.data.sessionObject.sessionId, userId);
         //state is a reserved word in reactjs and can be use
         //to pass data while navigating using hashHistory
         hashHistory.push({pathname: '/welcome', state: {userId: userId}});

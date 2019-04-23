@@ -2,6 +2,8 @@ import React, {Component} from "react"
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from "axios"
 
+import utils from "./utils.js"
+
 class LinkComponent extends Component {
   constructor(props){
     super(props);
@@ -16,7 +18,8 @@ class LinkComponent extends Component {
 
   handleHyperLink (text) {
     console.log(text)
-    const url = `http://tech-hunt-api:8080/techhunt/question/${text}`;
+    let cred = utils.getHeaders().authorization;
+    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question/${text}`;
     axios.get(
       url, {
         "crossOrigin": true

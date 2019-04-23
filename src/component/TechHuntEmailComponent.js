@@ -4,6 +4,7 @@ import {hashHistory} from "react-router"
 
 import '../css/app.css'
 import '../css/util.css'
+import utils from "./utils.js"
 
 class TechHuntEmailComponent extends Component {
   constructor() {
@@ -28,7 +29,8 @@ class TechHuntEmailComponent extends Component {
     let data = {
       emailTo: this.state.emailTo
     }
-     const url = `http://tech-hunt-api:8080/techhunt/email/send`;
+    let cred = utils.getHeaders().authorization;
+     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/email/send`;
      axios.post(
        url, data, {
          "crossOrigin": true
