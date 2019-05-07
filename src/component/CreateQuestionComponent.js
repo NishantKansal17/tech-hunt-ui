@@ -3,6 +3,7 @@ import axios from "axios"
 import {hashHistory} from "react-router"
 import {Card, Button, Form, Row, Col, Badge, InputGroup, FormControl} from "react-bootstrap"
 import TagsInput from "./TagsInputComponent"
+import AutoComplete from "./AutoCompleteComponent"
 
 
 import '../css/app.css'
@@ -19,7 +20,7 @@ class CreateQuestionComponent extends Component {
       questionDescription: "",
       answerDescription: "",
       questionPoints: "",
-      languages: [{value:"Java", choice:"Java"}, {value:"Python", choice:"Python"}, {value:"JavaScript", choice:"JavaScript"}],
+      languages: [{value:"Java", choice:"Java"}, {value:"Python", choice:"Python"}, {value:"JavaScript", choice:"JavaScript"}, {value:"Ruby", choice:"Ruby"}],
       languageTyped: "",
       questionLanguage: "",
       type: [{value:0, choice:"Easy"}, {value:1, choice:"Medium"}, {value:2, choice:"Hard"}],
@@ -34,8 +35,8 @@ class CreateQuestionComponent extends Component {
     this.updateTags = this.updateTags.bind(this)
     this.removeTag = this.removeTag.bind(this)
     this.deleteChoice = this.deleteChoice.bind(this)
-    this.handleLanguageKeyDown = this.handleLanguageKeyDown.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
+    this.handleValueSelect = this.handleValueSelect.bind(this)
   }
 
   addTag(key, tagValue, tagChoice) {
@@ -102,18 +103,14 @@ class CreateQuestionComponent extends Component {
     })
   }
 
-  handleLanguageKeyDown(event) {
-    if (event.key === 'Enter') {
-      let value = event.target.value
-      if(value !== "") {
-        this.setState({
-          languageTyped : ""
-        })
-        this.addTag("language", value)
-      } else {
-        alert("Please enter value")
-      }
-      event.preventDefault();
+  handleValueSelect(userInput) {
+    if(userInput !== "") {
+      this.setState({
+        languageTyped : ""
+      })
+      this.addTag("language", userInput, userInput)
+    } else {
+      alert("Please enter value")
     }
   }
 
@@ -168,7 +165,7 @@ class CreateQuestionComponent extends Component {
       let data = {
         questionType: this.state.questionType,
         questionOptions: questionOptions,
-        questionSolution: "123",
+        questionSolution: questionSolution,
         answerDescription: this.state.answerDescription,
         questionLanguage: this.state.questionLanguage,
         questionDescription: this.state.questionDescription,
@@ -207,7 +204,8 @@ class CreateQuestionComponent extends Component {
   }
 
   render() {
-    let { validated,tags } = this.state;
+    let { validated,tags } = this.state
+    const languageSuggestion = ["Html", "Css", "JavaScript", "Java", "Python", "Ruby", "C", "C++", "PHP", "Swift"]
     let tagsToShow = []
     for(let i in tags) {
       tagsToShow.push(<Badge pill variant="warning" style={{padding: "10px",fontSize: "10px", margin: "1px 1px 1px 1px"}} key={i} type="success-inverted">{tags[i]} <i className="fa fa-times" style={{cursor: "pointer"}} onClick={() => this.removeTag(i)}></i></Badge>);
@@ -314,17 +312,8 @@ class CreateQuestionComponent extends Component {
               <Form.Label as="h2" column md="2">Select Language</Form.Label>
               <Col md="7">
                 <Form.Group as={Row} style={{marginLeft: "-1px"}}>
-                    <TagsInput name="language" tags={this.state.languages} onClick={this.addTag}/>
-                  <InputGroup style={{width: "30%"}}>
-                    <FormControl
-                      placeholder="Enter Language"
-                      name="languageTyped"
-                      autoComplete="off"
-                      onKeyDown={(e) => this.handleLanguageKeyDown(e)}
-                      value={this.state.languageTyped}
-                      onChange={this.handleChange}
-                    />
-                  </InputGroup>
+                  <TagsInput name="language" tags={this.state.languages} onClick={this.addTag}/>
+                  <AutoComplete defaultValue={this.state.languageTyped} suggestions={languageSuggestion} onSelect={this.handleValueSelect} />
                 </Form.Group>
               </Col>
             </Form.Group>

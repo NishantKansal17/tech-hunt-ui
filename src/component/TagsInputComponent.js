@@ -15,11 +15,9 @@ class TagsInput extends Component {
   render() {
     let tags = this.props.tags;
     return (
-      <div>
-         <div>
-          {tags && tags.map((tag, index) => <Badge pill variant="info" onClick={(e) => {this.addTag(tag.value, tag.choice)}}
-                    style={{padding: "7px",cursor: "pointer", fontSize: "10px", margin: "1px 5px 1px 1px"}} key={index} type="success-inverted">{tag.choice}</Badge>)}
-        </div>
+       <div style={{marginBottom:"5px"}}>
+        {tags && tags.map((tag, index) => <Badge pill variant="info" onClick={(e) => {this.addTag(tag.value, tag.choice)}}
+                  style={{padding: "7px",cursor: "pointer", fontSize: "10px", margin: "1px 5px 1px 1px"}} key={index} type="success-inverted">{tag.choice}</Badge>)}
       </div>
     )
   }
