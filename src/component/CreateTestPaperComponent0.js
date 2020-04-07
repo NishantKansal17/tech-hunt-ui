@@ -48,7 +48,7 @@ class CreateTestPaperComponent extends Component {
       questionIds: questionIds
     }
     console.log(data)
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/create`;
+    const url = `http://localhost:8088/techhunt/testpaper/create`;
     axios.post(
       url, data, {
         "crossOrigin": true

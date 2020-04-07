@@ -31,7 +31,7 @@ class ForgotUserNamePasswordComponent extends React.Component {
       window.alert("User password and Confirm user password doesn't match!");
       return;
     }
-    const url = `/proxy?url=http://tech-hunt-api:8080/techhunt/user/updateUserCred`;
+    const url = `/proxy?url=http://localhost:8088/techhunt/user/updateUserCred`;
     let data = {
       userId: this.state.updateUserName,
       userPwd: this.state.updateUserPassword

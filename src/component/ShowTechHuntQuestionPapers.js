@@ -12,12 +12,13 @@ import utils from "./utils.js"
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/app.css'
+import jQuery from "jquery"
 
 import LinkComponent from "./LinkComponent"
 
 class ShowTechHuntQuestionPapers extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       data: [],
       dataToDelete: [],
@@ -38,9 +39,12 @@ class ShowTechHuntQuestionPapers extends Component {
       selectedData: [],
       show: false,
       modalData: {
-        testPaperId: "",
-        createrId: "",
-        questionIds: []
+        data: {
+          testPaperId: "",
+          createrId: "",
+          questionIds: []
+        },
+        userId: ""
       },
       showEmail: false,
       email: ""
@@ -56,15 +60,14 @@ class ShowTechHuntQuestionPapers extends Component {
   }
 
   componentDidMount () {
-    let cred = utils.getHeaders().authorization;
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
+    let cred = utils.getHeaders(this.props.state.userId).authorization;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
      let data = response.data;
-     console.log(response.data)
      this.setState({
        data: data
      })
@@ -75,23 +78,21 @@ class ShowTechHuntQuestionPapers extends Component {
     var option = window.confirm("Are you sure to delete this question paper?")
     if (option) {
       let data = this.state.selectedData
-      console.log(data)
-      let cred = utils.getHeaders().authorization;
-      const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/deleteMultiPapersById/${localStorage.getItem("userId")}`;
+      let cred = utils.getHeaders(this.props.state.userId).authorization;
+      const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/deleteMultiPapersById/${localStorage.getItem("userId")}`;
       axios.delete(
         url, {data: data}, {
           "crossOrigin": true
         }
       ).then(response => {
         alert(response.data.message)
-        const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
+        const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
         axios.get(
           url, {
             "crossOrigin": true
           }
         ).then(response => {
          let data = response.data;
-         console.log(response.data)
          this.setState({
            data: data
          })
@@ -110,21 +111,20 @@ class ShowTechHuntQuestionPapers extends Component {
       return
     }
     let testPaperId = this.state.selectedData[0]['testPaperId']
-    let cred = utils.getHeaders().authorization;
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/${testPaperId}`;
+    let cred = utils.getHeaders(this.props.state.userId).authorization;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/${testPaperId}`;
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
       if (response.data !== undefined || response.data !== null) {
-        console.log(response.data.status)
         this.setState(prevState => {
-          prevState['modalData'] = response.data
+          prevState['modalData'].data = response.data
+          prevState['modalData'].userId = this.props.state.userId
           prevState['show'] = true
           return prevState
         });
-        console.log(this.state)
       } else {
         alert(response.data.message)
       }
@@ -153,6 +153,14 @@ class ShowTechHuntQuestionPapers extends Component {
   }
 
   emailQuestionPaper () {
+    if (this.state.selectedData.length == 0) {
+      alert ("Please select one row!")
+      return
+    }
+    if (this.state.selectedData.length > 1) {
+      alert ("Please select onle one row!")
+      return
+    }
     this.setState(prevState => {
       prevState['showEmail'] = true
       return prevState
@@ -167,17 +175,20 @@ class ShowTechHuntQuestionPapers extends Component {
     let emails = this.state.email.split(",")
     let data = {
       emailTo: emails,
-      emailSubject: "<This is an invitation from tech-hunt for online exam TODO>",
-      emailBody: "<This is an invitation from tech-hunt for online exam TODO>"
+      emailSubject: "This is an invitation from tech-hunt for online exam.",
+      emailBody: "This is an invitation from tech-hunt for online exam."
     }
-    let cred = utils.getHeaders().authorization;
-     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/email/send`;
+
+    let testPaperId = this.state.selectedData[0].testPaperId;
+    let cred = utils.getHeaders(this.props.state.userId).authorization;
+    jQuery('#cover-spin').show();
+     const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/email/send/${testPaperId}`;
      axios.post(
        url, data, {
          "crossOrigin": true
        }
      ).then(response => {
-       console.log(response)
+       jQuery('#cover-spin').hide();
        if (response.data.status === "success") {
          window.alert("Email sent successfully!")
          this.setState(prevState => {
@@ -191,9 +202,9 @@ class ShowTechHuntQuestionPapers extends Component {
   }
 
   render () {
-
       return (
         <div>
+          <div id="cover-spin"></div>
           <div className="btn-group float-left">
             <button
               className="btn btn-secondary btn-md button-border"
@@ -228,17 +239,15 @@ class ShowTechHuntQuestionPapers extends Component {
                 } else {
                   let array = []
                   this.state.selectedData.map(function(item, index) {
-                    if (item.questionId !== row.questionId) {
+                    if (item.testPaperId !== row.testPaperId) {
                       array.push(item)
                     }
                   })
-                  console.log(array)
                   this.setState(prevState => {
                     prevState['selectedData'] = array
                     return prevState
                   });
                 }
-                console.log(this.state.selectedData)
               }
             }}
             pagination={ paginationFactory() }
@@ -254,7 +263,7 @@ class ShowTechHuntQuestionPapers extends Component {
                   <Form.Control
                     type="text"
                     name="testPaperId"
-                    value={this.state.modalData.testPaperId}>
+                    value={this.state.modalData.data.testPaperId}>
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="questionIdsGroup">
@@ -266,7 +275,7 @@ class ShowTechHuntQuestionPapers extends Component {
                     <Form.Control
                       type="text"
                       name="createrId"
-                      value={this.state.modalData.createrId}>
+                      value={this.state.modalData.data.createrId}>
                     </Form.Control>
                 </Form.Group>
               </Form>
@@ -287,7 +296,7 @@ class ShowTechHuntQuestionPapers extends Component {
               type="text"
               name="email"
               placeholder="Comma Separated Emails"
-              value={this.state.email}
+              value={this.state.data.email}
               onChange={this.handleChange}>
             </input>
           </Modal.Body>

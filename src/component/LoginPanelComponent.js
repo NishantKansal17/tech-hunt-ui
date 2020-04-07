@@ -2,7 +2,9 @@ import React, {Component} from "react"
 import axios from "axios"
 import {Link, hashHistory} from "react-router"
 import cookie from 'react-cookies'
+import LoadingSpinner from "./LoadingSpinner.js"
 import utils from "./utils.js"
+import jQuery from "jquery"
 
 import '../css/app.css'
 import '../css/util.css'
@@ -12,7 +14,8 @@ class LoginPanelComponent extends Component {
     super(props);
     this.state = {
       userName: "",
-      userPassword: ""
+      userPassword: "",
+      loading: "none"
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -23,13 +26,15 @@ class LoginPanelComponent extends Component {
     let userPassword = this.state.userPassword
     localStorage.setItem("userId", userId)
     let cred = btoa(`${userId}:${userPassword}`)
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8088/techhunt/user/validateUser/`;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/user/validateUser/`;
+    console.log(document.getElementById("cover-spin"))
+    jQuery('#cover-spin').show();
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
-      console.log(response.headers)
+      jQuery('#cover-spin').hide();
       if (response.data.status === "failure") {
         hashHistory.push('/error');
       } else {
@@ -51,6 +56,7 @@ class LoginPanelComponent extends Component {
     return (
       <div className="col-4">
         <div>
+          <div id="cover-spin"></div>
           <div style={{float: 'right', paddingRight: '50px', paddingTop: '20px'}}>
              <div className="wrap-login100">
                  <form

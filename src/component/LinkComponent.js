@@ -17,9 +17,9 @@ class LinkComponent extends Component {
   }
 
   handleHyperLink (text) {
-    console.log(text)
-    let cred = utils.getHeaders().authorization;
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question/${text}`;
+    console.log(this.props.links)
+    let cred = utils.getHeaders(this.props.links.userId).authorization;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/question/${text}`;
     axios.get(
       url, {
         "crossOrigin": true
@@ -67,7 +67,7 @@ class LinkComponent extends Component {
     return (
       <div>
         <div>
-          {this.props.links.questionIds.sort().map((item, index) => (
+          {this.props.links.data.questionIds.sort().map((item, index) => (
             <div>
               <a id={item+"-"+index}
                 style={{cursor: 'pointer', color: 'blue', textDecoration: 'underline'}}
@@ -125,7 +125,7 @@ class LinkComponent extends Component {
                   <Form.Control
                     type="text"
                     name="questionSolution"
-                    value={this.state.data.questionSolution}>
+                    value={this.state.data.answerDescription}>
                   </Form.Control>
               </Form.Group>
               <Form.Group controlId="multiChoiceGroup">
@@ -140,7 +140,7 @@ class LinkComponent extends Component {
                   type="radio"
                   label="False"
                   name="multiQuestion"
-                  checked={this.state.data.multiQuestion}
+                  checked={this.state.data.multiQuestion == false}
                 />
               </Form.Group>
             </Form>

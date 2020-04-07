@@ -22,10 +22,11 @@ class PreloadedQuestionsComponent extends React.Component {
         questionType: "",
         questionDescription: "",
         questionOptions: "",
-        questionSolution: "",
+        answerDescription: "",
         questionLanguage: "",
         questionDefault: false,
-        multiQuestion: false
+        multiQuestion: false,
+        questionPoint: 0
       },
       columns: [
         {
@@ -41,8 +42,8 @@ class PreloadedQuestionsComponent extends React.Component {
           text: 'Question Options'
         },
         {
-          dataField: 'questionSolution',
-          text: 'Question Solution'
+          dataField: 'answerDescription',
+          text: 'Answer Description'
         },
         {
           dataField: 'questionLanguage',
@@ -55,6 +56,10 @@ class PreloadedQuestionsComponent extends React.Component {
         {
           dataField: 'multiQuestion',
           text: 'Multiple Choice'
+        },
+        {
+          dataField: 'questionPoint',
+          text: 'Question Point'
         }
       ],
       show: false,
@@ -80,7 +85,7 @@ class PreloadedQuestionsComponent extends React.Component {
       hashHistory.push('/');
     }
     let cred = authHeader.authorization
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8088/techhunt/question`;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/question`;
     axios.get(
       url, {
         "crossOrigin": true
@@ -134,13 +139,13 @@ class PreloadedQuestionsComponent extends React.Component {
       createrId: localStorage.getItem("userId"),
       questionIds: questionIds
     }
-    let authHeader = utils.getHeaders()
+    let authHeader = utils.getHeaders(this.props.state.userId)
     let cred = authHeader.authorization
     if (authHeader === undefined || authHeader === null) {
       alert("Invalid user session.")
       hashHistory.push('/');
     }
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/testpaper/create`;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/create`;
     axios.post(
       url, data, {
         "crossOrigin": true
@@ -159,7 +164,7 @@ class PreloadedQuestionsComponent extends React.Component {
           prevState['show'] = false
           return prevState
         });
-        hashHistory.push('/error');
+        alert(response.data.message);
       }
     })
   }
@@ -239,13 +244,13 @@ class PreloadedQuestionsComponent extends React.Component {
       if (!isOK) {
         return
       }
-      let authHeader = utils.getHeaders()
+      let authHeader = utils.getHeaders(this.props.state.userId)
       let cred = authHeader.authorization
       if (authHeader === undefined || authHeader === null) {
         alert("Invalid user session.")
         hashHistory.push('/');
       }
-      const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question/deleteMultiQuestions/${questions}`;
+      const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/question/deleteMultiQuestions/${questions}`;
       axios.delete(
         url, {
           "crossOrigin": true
@@ -253,7 +258,7 @@ class PreloadedQuestionsComponent extends React.Component {
       ).then(response => {
         if (response.data.status === "success") {
           alert(response.data.message)
-          const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/question`;
+          const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/question`;
           axios.get(
             url, {
               "crossOrigin": true
@@ -392,9 +397,9 @@ class PreloadedQuestionsComponent extends React.Component {
               <Form.Label>Question Solution (Comma separated)</Form.Label>
                 <Form.Control
                   type="text"
-                  name="questionSolution"
+                  name="answerDescription"
                   onChange={this.handleModalValueChange}
-                  value={this.state.questionModalData.questionSolution}>
+                  value={this.state.questionModalData.answerDescription}>
                 </Form.Control>
             </Form.Group>
             <Form.Group controlId="multiChoiceGroup">

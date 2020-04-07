@@ -33,15 +33,15 @@ class TokenValidationComponent extends Component {
     event.preventDefault()
     let data = this.state.data
     console.log(data)
-    let cred = utils.getHeaders().authorization;
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}`;
+    //let cred = utils.getHeaders().authorization;
+    const url = `/proxy?url=http://localhost:8088/techhunt/user/validateToken/${this.state.token}`;
     axios.get(
       url, {
         "crossOrigin": true
       }
     ).then(response => {
        if (response.data.status === "success") {
-         const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/createUser`;
+         const url = `/proxy?url=http://localhost:8088/techhunt/user/createUser`;
           axios.post(
             url, data, {
               "crossOrigin": true

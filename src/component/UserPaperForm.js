@@ -2,17 +2,21 @@ import React, {Component} from "react"
 import axios from "axios"
 import {hashHistory} from "react-router"
 import {Card, Button, Form} from "react-bootstrap"
-//import Question from "./question"
+import ExamHeader from "./ExamHeader.js"
 
 import '../css/app.css'
 import '../css/util.css'
+import utils from "./utils.js"
+import jQuery from "jquery"
 
 class UserPaperForm extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
        questions: [],
-       answers: []
+       answers: [],
+       userId: "",
+       token: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,49 +24,81 @@ class UserPaperForm extends Component {
     this.buildRadioButtons = this.buildRadioButtons.bind(this);
   }
   componentDidMount() {
-    const url = `http://tech-hunt-api:8080/techhunt/testpaper/findPaperById/${localStorage.getItem("userId")}/tim_test?showQuestion=true`;
+    var href = window.location.href;
+    var splittedUrl = href.split("?");
+    var queryParams = splittedUrl[1].split("&");
+    var testPaperQParam = queryParams[0];
+    var userIdQParam = queryParams[1];
+    jQuery('#cover-spin').show();
+    const tokenUrl = `/proxy?url=http://localhost:8088/techhunt/user/token/create/${userIdQParam.split("=")[1]}`;
     axios.get(
-      url, {
+      tokenUrl, {
         "crossOrigin": true
       }
     ).then(response => {
-     const questions = response.data.questions;
-     console.log("const questions is: ", questions);
-     const updatedQuestions = questions.map(question => {
-       if (question != null) {
-         return {
-           ...question
+      console.log("token: ", response.data.message);
+      this.setState(prevState => {
+        prevState["userId"] = userIdQParam.split("=")[1];
+        prevState["token"] = response.data.message;
+        return prevState
+      });
+      let cred = response.data.message;
+      const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/findPaperById/${userIdQParam.split("=")[1]}/${testPaperQParam.split("=")[1]}?showQuestion=true`;
+      axios.get(
+        url, {
+          "crossOrigin": true
+        }
+      ).then(response => {
+       jQuery('#cover-spin').hide();
+       const questions = response.data.questions;
+       console.log("const questions is: ", questions);
+       const updatedQuestions = questions.map(question => {
+         if (question != null) {
+           return {
+             ...question
+           }
          }
-       }
-     });
-     this.setState({questions: updatedQuestions});
-     console.log("updatedQuestions: ", updatedQuestions);
+       });
+       this.setState({questions: updatedQuestions});
+       console.log("updatedQuestions: ", updatedQuestions);
+      })
     })
   }
 
   handleSubmit(event) {
     event.preventDefault()
+    var href = window.location.href;
+    var splittedUrl = href.split("?");
+    var queryParams = splittedUrl[1].split("&");
+    var testPaperQParam = queryParams[0];
+    var userIdQParam = queryParams[1];
+
+    let testPaperId = testPaperQParam.split("=")[1];
+    let cred = this.state.token;
+    let submitterId = userIdQParam.split("=")[1];
     let data = {
-      submitterId: localStorage.getItem("userId"),
-      testPaperId: "tim_test",
+      submitterId: submitterId,
+      testPaperId: testPaperId,
       questionEntry: this.state.answers
     }
-    console.log("data submitted is: ", data);
-     const url = `http://localhost:8088/techhunt/testpaper/evaluation/evaluate`;
+    console.log(data.questionEntry)
+    jQuery('#cover-spin').show();
+     const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/evaluation/evaluate`;
      axios.post(
        url, data, {
          "crossOrigin": true
        }
      ).then(response => {
-       console.log(response)
+       jQuery('#cover-spin').hide();
        if (response.data.status === "success") {
-         window.alert("Exam submitted successfully!")
+         window.alert("Exam submitted successfully! Please check your email for exam result.")
          this.setState({
            answers: []
          });
-        //hashHistory.push('/welcome');
+         window.close();
       } else {
-        hashHistory.push('/error');
+        window.alert(`${response.data.message}. Please try again!`);
+        return;
       }
      })
   }
@@ -94,7 +130,9 @@ onInput(e) {
   console.log("OnInput() > e.target: ", e.target);
   const id = e.target.name;
   const type = e.target.type;
-  const answer = { id, questionSolution: "", answersubmitted: e.target.value };
+  var answerArray = [];
+  answerArray.push(e.target.value);
+  const answer = { questionId: id, questionSolution: "", answersubmitted: answerArray };
   let answers;
   // if (type == "checkbox") {
   //   if (this.state.answers.filter(answer => answer.id === id)) {
@@ -111,9 +149,9 @@ onInput(e) {
       console.log("index found is: ", index);
       answer.questionSolution = this.state.questions[index].questionSolution;
 
-      if (this.state.answers.some(answer => answer.id === id)) {
+      if (this.state.answers.some(answer => answer.questionId === id)) {
         console.log("loop1");
-        answers = [...this.state.answers.filter(answer => answer.id !== id), answer];
+        answers = [...this.state.answers.filter(answer => answer.questionId !== id), answer];
         console.log("...this.state.answers is: ", [...this.state.answers]);
       } else {
         console.log("loop2");
@@ -144,6 +182,8 @@ onInput(e) {
         });
         return (
           <Card style={{width: "100rem", marginLeft: "12%"}}>
+            <ExamHeader userId={this.state.userId} />
+            <div id="cover-spin"></div>
             <Card.Header as="h5">Tech Know Exam</Card.Header>
             <Card.Body>
                 <Form style={{width: "100%"}}>
@@ -151,7 +191,7 @@ onInput(e) {
                       {iterator}
                     </div>
                     <Button variant="primary" type="button" size="lg" onClick={this.handleSubmit}>
-                      Submit
+                      Submit Evaluation
                     </Button>
                 </Form>
             </Card.Body>

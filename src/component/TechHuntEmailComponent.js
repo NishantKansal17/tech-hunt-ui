@@ -1,6 +1,7 @@
 import React,{Component} from "react"
 import axios from "axios"
 import {hashHistory} from "react-router"
+import jQuery from "jquery"
 
 import '../css/app.css'
 import '../css/util.css'
@@ -30,13 +31,16 @@ class TechHuntEmailComponent extends Component {
       emailTo: this.state.emailTo
     }
     let cred = utils.getHeaders().authorization;
-     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/email/send`;
+    console.log(document.getElementById("cover-spin"))
+    jQuery('#cover-spin').show();
+     const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/email/send`;
      axios.post(
        url, data, {
          "crossOrigin": true
        }
      ).then(response => {
        console.log(response)
+      jQuery('#cover-spin').hide();
        if (response.data.status === "success") {
          window.alert("Email sent successfully!")
         hashHistory.push('/welcome');
@@ -55,6 +59,7 @@ class TechHuntEmailComponent extends Component {
                className="login100-form validate-form p-l-55 p-r-55 p-t-110"
                onSubmit={this.handleSubmit}>
                   <span className="login100-form-title">Send Email</span>
+                  <div id="cover-spin"></div>
                 <div
                   className="wrap-input100 validate-input m-b-16">
                   <input

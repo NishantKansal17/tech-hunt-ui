@@ -33,7 +33,7 @@ class TechHuntSignupComponent extends Component {
   handleValidate () {
     console.log(this.state)
     let cred = utils.getHeaders().authorization;
-    const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/validateToken/${this.state.token}/${this.state.userId}`;
+    const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/user/validateToken/${this.state.token}/${this.state.userId}`;
     axios.get(
      url, {
        "crossOrigin": true
@@ -43,7 +43,7 @@ class TechHuntSignupComponent extends Component {
         this.setState(prevState => {
           prevState['show'] = false
         });
-        const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/createUser`;
+        const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/user/createUser`;
          axios.post(
            url, this.state , {
              "crossOrigin": true
@@ -100,7 +100,7 @@ class TechHuntSignupComponent extends Component {
       userPwd: this.state.userPwd
     }
     let cred = utils.getHeaders().authorization;
-     const url = `http://localhost:3999/proxy?_t=${cred}&url=http://tech-hunt-api:8080/techhunt/user/stageUser`;
+     const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/user/stageUser`;
      axios.post(
        url, data, {
          "crossOrigin": true

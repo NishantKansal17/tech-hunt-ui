@@ -8,10 +8,11 @@ import AutoComplete from "./AutoCompleteComponent"
 
 import '../css/app.css'
 import '../css/util.css'
+import utils from "./utils.js"
 
 class CreateQuestionComponent extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       validated: false,
       isMultiQuestion: false,
@@ -19,7 +20,7 @@ class CreateQuestionComponent extends Component {
       questionSolution: [],
       questionDescription: "",
       answerDescription: "",
-      questionPoints: "",
+      questionPoint: "",
       languages: [{value:"Java", choice:"Java"}, {value:"Python", choice:"Python"}, {value:"JavaScript", choice:"JavaScript"}, {value:"Ruby", choice:"Ruby"}],
       languageTyped: "",
       questionLanguage: "",
@@ -83,6 +84,13 @@ class CreateQuestionComponent extends Component {
       if (name.indexOf("questionChoice") != -1) {
         let questionChoice = name.split(":")
         prevState.questionOptions[questionChoice[1]].value = value
+      } else if (name === "isMultiQuestion") {
+        if (value === "true") {
+          alert("You have selected multiple choice question. Please enter comma separated answer descriptions!");
+          prevState[name] = value
+        } else {
+          prevState[name] = value
+        }
       } else {
         prevState[name] = value
       }
@@ -97,7 +105,7 @@ class CreateQuestionComponent extends Component {
       prevState.questionSolution = []
       prevState.questionDescription = ""
       prevState.answerDescription = ""
-      prevState.questionPoints = ""
+      prevState.questionPoint = ""
       prevState.questionLanguage = ""
       return prevState
     })
@@ -153,7 +161,7 @@ class CreateQuestionComponent extends Component {
     this.setState({ validated: true });
     if (form.checkValidity() !== false) {
       //Hanlde question right options
-      let questionSolution = this.state.questionOptions.map(choice => {
+      let questionSolution = this.state.questionSolution.map(choice => {
         if(choice.correct)
           return choice.value
       }).filter(choice => choice)
@@ -169,12 +177,13 @@ class CreateQuestionComponent extends Component {
         answerDescription: this.state.answerDescription,
         questionLanguage: this.state.questionLanguage,
         questionDescription: this.state.questionDescription,
-        questionPoints: this.state.questionPoints,
+        questionPoint: this.state.questionPoint,
         questionType: this.state.questionType,
         isMultiQuestion: this.state.isMultiQuestion
       }
-      console.log(this.state)
-       const url = `http://tech-hunt-api:8080/techhunt/question/create`;
+       console.log(this.state);
+       let cred = utils.getHeaders(this.props.state.userId).authorization;
+       const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/question/create`;
        axios.post(
          url, data, {
            "crossOrigin": true
@@ -189,7 +198,7 @@ class CreateQuestionComponent extends Component {
              prevState.questionSolution = []
              prevState.questionDescription = ""
              prevState.answerDescription = ""
-             prevState.questionPoints = ""
+             prevState.questionPoint = ""
              prevState.questionLanguage = ""
              prevState.validated = false
              prevState.tags = {}
@@ -222,8 +231,9 @@ class CreateQuestionComponent extends Component {
                   name="isMultiQuestion"
                   value={this.state.isMultiQuestion}
                   onChange={this.handleChange} required>
-                  <option value="false">--Select--</option>
-                  <option value="true">Multiple Choice Question</option>
+                  <option value="--Select--">--Select--</option>
+                  <option value="true">True</option>
+                  <option value="false">False</option>
                 </Form.Control>
                 <Form.Control.Feedback style={{fontSize: "larger"}} type="invalid">
                   Please select question type.
@@ -336,11 +346,11 @@ class CreateQuestionComponent extends Component {
                 <InputGroup>
                   <FormControl
                     placeholder="Enter Points"
-                    name="questionPoints"
+                    name="questionPoint"
                     md="2"
                     autoComplete="off"
                     column
-                    value={this.state.questionPoints}
+                    value={this.state.questionPoint}
                     onChange={this.handleChange}
                   />
                   <Form.Control.Feedback style={{fontSize: "larger"}} type="invalid">

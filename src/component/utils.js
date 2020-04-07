@@ -12,5 +12,15 @@ export default {
           return this.headers[item];
         }
       }
+    },
+
+    showSpinner () {
+      const spinner = document.getElementById("spinner");
+      spinner.className = "show";
+    },
+
+    hideSpinner () {
+      const spinner = document.getElementById("spinner");
+      spinner.className = spinner.className.replace("show", "");
     }
 }

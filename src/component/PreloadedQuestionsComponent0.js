@@ -111,7 +111,7 @@ class PreloadedQuestionsComponent extends React.Component {
     //     }
     //   ]
     // })
-    const url = `http://tech-hunt-api:8080/techhunt/question`;
+    const url = `http://localhost:8088/techhunt/question`;
     axios.get(
       url, {
         "crossOrigin": true
