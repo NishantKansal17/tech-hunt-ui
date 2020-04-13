@@ -40,6 +40,18 @@ class CreateQuestionComponent extends Component {
     this.handleValueSelect = this.handleValueSelect.bind(this)
   }
 
+  componentDidMount () {
+    let sessionId = this.props.state.sessionId;
+    let userId = this.props.state.userId;
+    utils.checkSessionTimeout(userId, sessionId).then(result => {
+      if (result) {
+        alert("Your session has expired. Please login again!");
+        hashHistory.push('/');
+        return;
+      }
+    })
+  }
+
   addTag(key, tagValue, tagChoice) {
     let tags = this.state.tags
     let { questionType,questionLanguage } = this.state

@@ -41,7 +41,7 @@ class LoginPanelComponent extends Component {
         utils.setHeaders(response.data.sessionObject.sessionId, userId);
         //state is a reserved word in reactjs and can be use
         //to pass data while navigating using hashHistory
-        hashHistory.push({pathname: '/welcome', state: {userId: userId}});
+        hashHistory.push({pathname: '/welcome', state: {userId: userId, sessionId: response.data.sessionObject.sessionId}});
       }
     })
     }

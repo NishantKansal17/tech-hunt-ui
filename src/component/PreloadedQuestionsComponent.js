@@ -77,8 +77,17 @@ class PreloadedQuestionsComponent extends React.Component {
     this.handleModalValueChange = this.handleModalValueChange.bind(this)
     this.deleteQuestion = this.deleteQuestion.bind(this)
   }
-
   componentDidMount() {
+    let sessionId = this.props.state.sessionId;
+    let userId = this.props.state.userId;
+    utils.checkSessionTimeout(userId, sessionId).then(result => {
+      if (result) {
+        alert("Your session has expired. Please login again!");
+        hashHistory.push('/');
+        return;
+      }
+    })
+
     let authHeader = utils.getHeaders(this.props.state.userId)
     if (authHeader === undefined || authHeader === null) {
       alert("Invalid user session.")

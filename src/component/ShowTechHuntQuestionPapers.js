@@ -60,6 +60,16 @@ class ShowTechHuntQuestionPapers extends Component {
   }
 
   componentDidMount () {
+    let sessionId = this.props.state.sessionId;
+    let userId = this.props.state.userId;
+    utils.checkSessionTimeout(userId, sessionId).then(result => {
+      if (result) {
+        alert("Your session has expired. Please login again!");
+        hashHistory.push('/');
+        return;
+      }
+    })
+
     let cred = utils.getHeaders(this.props.state.userId).authorization;
     const url = `/proxy?_t=${cred}&url=http://localhost:8088/techhunt/testpaper/findAllPapers/${localStorage.getItem("userId")}`;
     axios.get(
@@ -172,13 +182,14 @@ class ShowTechHuntQuestionPapers extends Component {
       alert ("Email(s) can't be empty!")
       return
     }
-    let emails = this.state.email.split(",")
+    let emails = this.state.email.split(",");
+    let date = new Date();
     let data = {
       emailTo: emails,
       emailSubject: "This is an invitation from tech-hunt for online exam.",
-      emailBody: "This is an invitation from tech-hunt for online exam."
+      emailBody: "This is an invitation from tech-hunt for online exam.",
+      emailTimeAndDate: date
     }
-
     let testPaperId = this.state.selectedData[0].testPaperId;
     let cred = utils.getHeaders(this.props.state.userId).authorization;
     jQuery('#cover-spin').show();

@@ -22,6 +22,7 @@ class UserPaperForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInput = this.onInput.bind(this);
     this.buildRadioButtons = this.buildRadioButtons.bind(this);
+    this.getQuestionTypeString = this.getQuestionTypeString.bind(this);
   }
   componentDidMount() {
     var href = window.location.href;
@@ -126,6 +127,15 @@ class UserPaperForm extends Component {
     )
  })
 }
+getQuestionTypeString(question) {
+  if (question.questionType === "0") {
+    return "Easy";
+  } else if (question.questionType === "1") {
+    return "Medium";
+  } else if (question.questionType === "1") {
+    return "Hard";
+  }
+}
 onInput(e) {
   console.log("OnInput() > e.target: ", e.target);
   const id = e.target.name;
@@ -174,7 +184,7 @@ onInput(e) {
           }
           return (
             <div key={question.questionId}>
-              <h4>Question: {question.questionDescription}</h4>
+              <h4>Question: {question.questionDescription}  [Question Type: {this.getQuestionTypeString(question)}, Marks: {question.questionPoint}]</h4>
               <h4>Options: </h4>{this.buildRadioButtons(question.questionOptions, type, question.questionId)}
             </div>
           );
